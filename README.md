@@ -1,1 +1,12 @@
 # LatestProjectCodeSamples
+
+This is some source code of messaging-se - an example of the latest modules developed by me.
+At the current stage of the project development it is not an independent microservice. But with the high cohesion which I reached in this module, it won't make that much sacrifices to segregate it completely.
+
+High cohesion was achieved by reducing all possible interacting to interacting with a single [Sender Contract](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/messaging-se/src/Contracts/SmartEvalueringSenderContract.php). This contract is implemented by abstract [Sender](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/messaging-se/src/Services/SmartEvalueringSender.php) implementation which requires to define methods for the module connecting: for interal integration (as it's at the moment) it's extended as [Auth adapter](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/messaging-se/src/Services/SenderAuthAdapter.php), for future integration via a REST API - an appropriate one will be written with minimal sacrifices.
+
+employees-se is a real exisiting module of the project, but I've reduced it's content only to a couple of files to demonstrate how is the messaging-se module is integrated in it. 
+As you can see, employees-se works strictily with the contract:
+employees-se/FlowsController methods ( [28](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/employees-se/FlowsController.php#L28), [36](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/employees-se/FlowsController.php#L36), [53](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/employees-se/FlowsController.php#L53) and others) reach sender through the related user in the system. That user works with the sender as within an abstraction ( [User](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/employees-se/User.php) ) which concrete implementation is [bound through Laravel's service container](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/employees-se/EmployeesSmartEvalueringServiceProvider.php#L91) ( in our case it's [SenderAuthAdapter](https://github.com/Odnesor/LatestProjectCodeSamples/blob/main/messaging-se/src/Services/SenderAuthAdapter.php) ).
+It helps us adhere adrchitectural design principle which require to build architecture with abstractions instead of concrete implementations and makes the further messaging module segregation possible wiht minimal resources cost and potential risks.    
+ 
